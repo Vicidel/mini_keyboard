@@ -17,7 +17,9 @@
 #define MODE_KEYBOARD 1
 #define MODE_MOUSE 2
 #define MODE_MEDIA 3
-#define MODE_DEFAULT 4
+#define MODE_XX 4
+#define MODE_YY 5
+#define MODE_SNAKE 6
 int mode = MODE_MEDIA;
 
 #define OLED_RESET 4
@@ -64,7 +66,9 @@ void loop() {
         case(MODE_KEYBOARD): display.println("Keyboard mode"); break;
         case(MODE_MOUSE): display.println("Mouse mode"); break;
         case(MODE_MEDIA): display.println("Media mode"); break;
-        case(MODE_DEFAULT): display.println("Default mode"); break;
+        case(MODE_XX): display.println("XX mode"); break;
+        case(MODE_YY): display.println("YY mode"); break;
+        case(MODE_SNAKE): display.println("SNAKE mode"); break;
       }
       display.display();
       OledClear = false;
@@ -75,12 +79,18 @@ void loop() {
     if (digitalRead(LUp) == LOW){              // left pressed
       delay(100);
       if (digitalRead(RUp) == LOW){            // also right 
-        delay(500);
+        delay(200);
         if(digitalRead(LUp) == LOW && digitalRead(RUp) == LOW){       // both long pressed
           Serial.print("Both button long pressed\n");
+          mode = MODE_SNAKE;
+          OledClear = true;
+          delay(500);  // to leave time to release
         }
         else{                                                         // both short pressed
           Serial.print("Both button short pressed\n");
+          mode = MODE_XX;
+          OledClear = true;
+          delay(500);  // to leave time to release
         }
       }
       else{                                    // only left
@@ -89,13 +99,13 @@ void loop() {
           Serial.print("Left button short pressed\n");
           mode = MODE_MOUSE;
           OledClear = true;
-          delay(300);  // to leave time to release
+          delay(500);  // to leave time to release
         }
         if (digitalRead(LUp) == LOW){          // left long pressed
           Serial.print("Left button long pressed\n");
           mode = MODE_KEYBOARD;
           OledClear = true;
-          delay(300);  // to leave time to release
+          delay(500);  // to leave time to release
         }
       }
     }
@@ -103,12 +113,18 @@ void loop() {
     if (digitalRead(RUp) == LOW){            // right pressed
       delay(100);
       if (digitalRead(LUp) == LOW){          // also left 
-        delay(500);
+        delay(200);
         if(digitalRead(LUp) == LOW && digitalRead(RUp) == LOW){       // both long pressed
           Serial.print("Both button long pressed\n");
+          mode = MODE_SNAKE;
+          OledClear = true;
+          delay(500);  // to leave time to release
         }
         else{                                                         // both short pressed
           Serial.print("Both button short pressed\n");
+          mode = MODE_XX;
+          OledClear = true;
+          delay(500);  // to leave time to release
         }
       }
       else{                                  // only right
@@ -117,13 +133,13 @@ void loop() {
           Serial.print("Right button short pressed\n");
           mode = MODE_MEDIA;
           OledClear = true;
-          delay(300);  // to leave time to release
+          delay(500);  // to leave time to release
         }
         if (digitalRead(RUp) == LOW){       // right long pressed
           Serial.print("Right button long pressed\n");
-          mode = MODE_DEFAULT;
+          mode = MODE_YY;
           OledClear = true;
-          delay(300);  // to leave time to release
+          delay(500);  // to leave time to release
         }
       }
     }
