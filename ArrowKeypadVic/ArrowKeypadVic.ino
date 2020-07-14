@@ -43,10 +43,36 @@ void clear_screen() {
   if (OledClear == true) {
     display.clearDisplay();
     switch(mode){
-      case(MODE_KEYBOARD): display.drawBitmap(0, 0, keyboard, 128, 32, WHITE); break;
-      case(MODE_MOUSE): display.drawBitmap(0, 0, mouse, 128, 32, WHITE); break;
-      case(MODE_MUSIC): display.drawBitmap(0, 0, music, 128, 32, WHITE); break;
-      case(MODE_VLC): display.drawBitmap(0, 0, vlc, 128, 32, WHITE); break;
+      case(MODE_KEYBOARD): {
+        display.drawBitmap(0, 0, keyboard, 128, 32, WHITE); 
+        display.setCursor(32, 12);
+        display.println("Arrow keys");
+        break;
+      }
+      case(MODE_MOUSE): {
+        display.drawBitmap(0, 0, mouse, 128, 32, WHITE);
+        display.setCursor(32, 8);
+        display.println("Hold LR: scroll");
+        display.setCursor(32, 16);
+        display.println("Hold UD: click");
+        break;
+      }
+      case(MODE_MUSIC): {
+        display.drawBitmap(0, 0, music, 128, 32, WHITE); 
+        display.setCursor(32, 12);
+        display.println("Hold D: volume");
+        break;
+      }
+      case(MODE_VLC): {
+        display.drawBitmap(0, 0, vlc, 128, 32, WHITE); 
+        display.setCursor(32, 4);
+        display.println("LR for 10s");
+        display.setCursor(32, 13);
+        display.println("U+LR for 1mn");
+        display.setCursor(32, 22);
+        display.println("D+LR for 3s");
+        break;
+      }
       case(MODE_OFF): break;
       case(MODE_SNAKE): break;
     }
