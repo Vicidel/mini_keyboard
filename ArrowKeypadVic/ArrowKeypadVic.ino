@@ -4,16 +4,19 @@
 #include <Adafruit_SSD1306.h>
 #include "HID-Project.h"    // for multimedia keys
 
-// Defining each pin, with a unique name
+// for keys
 #define LUp 15
 #define Up 8
 #define RUp 14
 #define Left 6
 #define Down 7
 #define Right 9
-#define LedData 5
 
-// modes
+// for LED
+#define LedData 5
+bool led_on = false;
+
+// different modes
 #define MODE_KEYBOARD 1
 #define MODE_MOUSE 2
 #define MODE_MEDIA 3
@@ -22,15 +25,10 @@
 #define MODE_SNAKE 6
 int mode = MODE_MEDIA;
 
+// for OLED screen
 #define OLED_RESET 4
 #define NumLed 6
 boolean OledClear = true;
-
-long time_start = 0;
-long time_start_l = 0;
-long time_start_r = 0;
-
-//Setting up the OLED display and Neopixel Libraries
 Adafruit_SSD1306 display(OLED_RESET);
 
 
@@ -295,13 +293,22 @@ void vlc_function(){
 
 /*************************** off mode ***********************/
 void off_function(){
-  
+
+  // does nothing, that's the point
 }
 
 
 /*************************** snake mode ***********************/
 void snake_function(){
-  
+
+  // TODO
+}
+
+
+/*************************** LED control ***********************/
+void led_control(){
+
+  // TODO
 }
 
 
@@ -339,6 +346,9 @@ void loop() {
     // change the line of text accordingly
     clear_screen();
 
+    // change LED status
+    led_control();
+    
     /*************************** mode switch ***********************/
     switch(mode){
       case(MODE_KEYBOARD): keyboard_function(); break;
