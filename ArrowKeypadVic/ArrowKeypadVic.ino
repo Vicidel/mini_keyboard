@@ -3,6 +3,7 @@
 
 #include <Adafruit_SSD1306.h>
 #include "HID-Project.h"    // for multimedia keys
+#include "icons.h"          // for icons
 
 // for keys
 #define LUp 15
@@ -41,14 +42,13 @@ Adafruit_SSD1306 display(OLED_RESET);
 void clear_screen() {
   if (OledClear == true) {
     display.clearDisplay();
-    display.setCursor(0, 0);
     switch(mode){
-      case(MODE_KEYBOARD): display.println("Keyboard mode"); break;
-      case(MODE_MOUSE): display.println("Mouse mode"); break;
-      case(MODE_MUSIC): display.println("Music mode"); break;
-      case(MODE_VLC): display.println("VLC mode"); break;
-      case(MODE_OFF): display.println("Off mode"); break;
-      case(MODE_SNAKE): display.println("SNAKE mode"); break;
+      case(MODE_KEYBOARD): display.drawBitmap(0, 0, keyboard, 128, 32, WHITE); break;
+      case(MODE_MOUSE): display.drawBitmap(0, 0, mouse, 128, 32, WHITE); break;
+      case(MODE_MUSIC): display.drawBitmap(0, 0, music, 128, 32, WHITE); break;
+      case(MODE_VLC): display.drawBitmap(0, 0, vlc, 128, 32, WHITE); break;
+      case(MODE_OFF): display.drawBitmap(0, 0, music, 128, 32, WHITE); break;
+      case(MODE_SNAKE): display.drawBitmap(0, 0, music, 128, 32, WHITE); break;
     }
     display.display();
     OledClear = false;
