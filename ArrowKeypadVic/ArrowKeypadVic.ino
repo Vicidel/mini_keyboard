@@ -18,7 +18,7 @@
 #define MODE_MOUSE 2
 #define MODE_MEDIA 3
 #define MODE_VLC 4
-#define MODE_YY 5
+#define MODE_OFF 5
 #define MODE_SNAKE 6
 int mode = MODE_MEDIA;
 
@@ -44,7 +44,7 @@ void clear_screen() {
       case(MODE_MOUSE): display.println("Mouse mode"); break;
       case(MODE_MEDIA): display.println("Media mode"); break;
       case(MODE_VLC): display.println("VLC mode"); break;
-      case(MODE_YY): display.println("YY mode"); break;
+      case(MODE_OFF): display.println("Off mode"); break;
       case(MODE_SNAKE): display.println("SNAKE mode"); break;
     }
     display.display();
@@ -57,32 +57,32 @@ void clear_screen() {
 void change_mode() {
 
   // for left button
-  if (digitalRead(LUp) == LOW){              // left pressed
+  if (digitalRead(LUp) == LOW){                                   // left pressed
     delay(100);
-    if (digitalRead(RUp) == LOW){            // also right 
+    if (digitalRead(RUp) == LOW){                                   // also right 
       delay(200);
-      if(digitalRead(LUp) == LOW && digitalRead(RUp) == LOW){       // both long pressed
+      if(digitalRead(LUp) == LOW && digitalRead(RUp) == LOW){         // both long pressed
         Serial.print("Both button long pressed\n");
         mode = MODE_SNAKE;
         OledClear = true;
         delay(500);  // to leave time to release
       }
-      else{                                                         // both short pressed
+      else{                                                           // both short pressed
         Serial.print("Both button short pressed\n");
-        mode = MODE_YY;
+        mode = MODE_OFF;
         OledClear = true;
         delay(500);  // to leave time to release
       }
     }
-    else{                                    // only left
+    else{                                                           // only left
       delay(200);
-      if (digitalRead(LUp) == HIGH){         // left short pressed
+      if (digitalRead(LUp) == HIGH){                                  // left short pressed
         Serial.print("Left button short pressed\n");
         mode = MODE_MOUSE;
         OledClear = true;
         delay(500);  // to leave time to release
       }
-      if (digitalRead(LUp) == LOW){          // left long pressed
+      if (digitalRead(LUp) == LOW){                                   // left long pressed
         Serial.print("Left button long pressed\n");
         mode = MODE_KEYBOARD;
         OledClear = true;
@@ -90,33 +90,34 @@ void change_mode() {
       }
     }
   }
+  
   // for right button
-  if (digitalRead(RUp) == LOW){            // right pressed
+  if (digitalRead(RUp) == LOW){                                   // right pressed
     delay(100);
-    if (digitalRead(LUp) == LOW){          // also left 
+    if (digitalRead(LUp) == LOW){                                   // also left 
       delay(200);
-      if(digitalRead(LUp) == LOW && digitalRead(RUp) == LOW){       // both long pressed
+      if(digitalRead(LUp) == LOW && digitalRead(RUp) == LOW){         // both long pressed
         Serial.print("Both button long pressed\n");
         mode = MODE_SNAKE;
         OledClear = true;
         delay(500);  // to leave time to release
       }
-      else{                                                         // both short pressed
+      else{                                                           // both short pressed
         Serial.print("Both button short pressed\n");
-        mode = MODE_YY;
+        mode = MODE_OFF;
         OledClear = true;
         delay(500);  // to leave time to release
       }
     }
-    else{                                  // only right
+    else{                                                           // only right
       delay(200);
-      if (digitalRead(RUp) == HIGH){       // right short pressed
+      if (digitalRead(RUp) == HIGH){                                  // right short pressed
         Serial.print("Right button short pressed\n");
         mode = MODE_MEDIA;
         OledClear = true;
         delay(500);  // to leave time to release
       }
-      if (digitalRead(RUp) == LOW){       // right long pressed
+      if (digitalRead(RUp) == LOW){                                   // right long pressed
         Serial.print("Right button long pressed\n");
         mode = MODE_VLC;
         OledClear = true;
@@ -130,41 +131,35 @@ void change_mode() {
 /*************************** keyboard mode ***********************/
 void keyboard_function() {
   
-  //Up Arrow//
+  // up arrow
   if (digitalRead(Up) == LOW) Keyboard.press(KEY_UP_ARROW);
   if (digitalRead(Up) == HIGH) Keyboard.release(KEY_UP_ARROW);
   
-  //Down Arrow//
+  // down arrow
   if (digitalRead(Down) == LOW) Keyboard.press(KEY_DOWN_ARROW);
   if (digitalRead(Down) == HIGH) Keyboard.release(KEY_DOWN_ARROW);
   
-  //Right Arrow//
+  // right arrow
   if (digitalRead(Right) == LOW) Keyboard.press(KEY_RIGHT_ARROW);
   if (digitalRead(Right) == HIGH) Keyboard.release(KEY_RIGHT_ARROW);
   
-  //Left Arrow//
+  // left arrow
   if (digitalRead(Left) == LOW) Keyboard.press(KEY_LEFT_ARROW);
   if (digitalRead(Left) == HIGH) Keyboard.release(KEY_LEFT_ARROW);
-  
-  /*//Top Right Button//
-  if (digitalRead(RUp) == LOW) Keyboard.press(KEY_LEFT_ALT);
-  if (digitalRead(RUp) == HIGH) Keyboard.release(KEY_LEFT_ALT);
-  
-  //Top Right Button//
-  if (digitalRead(LUp) == LOW) Keyboard.press(KEY_LEFT_CTRL);
-  if (digitalRead(LUp) == HIGH) Keyboard.release(KEY_LEFT_CTRL);*/
 }
 
   
 /*************************** mouse mode ***********************/
 void mouse_function() {
-  
-  if (digitalRead(Down) == LOW) Mouse.move(0, 2);               // normal mouse mouvements
+
+  // mouse mouvements
+  if (digitalRead(Down) == LOW) Mouse.move(0, 2); 
   if (digitalRead(Up) == LOW) Mouse.move(0, -2);
   if (digitalRead(Right) == LOW) Mouse.move(2, 0);
   if (digitalRead(Left) == LOW) Mouse.move(-2, 0);
-  
-  if (digitalRead(Left) == LOW && digitalRead(Right) == LOW){   // left and right pressed: trigger mouse buttons
+
+  // for mouse buttons: for now hold LR and click up/down: TODO change it
+  if (digitalRead(Left) == LOW && digitalRead(Right) == LOW){   // left and right pressed
     delay(200);
     if (digitalRead(Left) == LOW && digitalRead(Right) == LOW){        // still pressing both
       while(digitalRead(Left) == LOW && digitalRead(Right) == LOW){
@@ -187,6 +182,8 @@ void mouse_function() {
 
 /*************************** media mode ***********************/
 void media_function() {
+
+  // down for mute: hold for volume control with LR
   if (digitalRead(Down) == LOW){
     delay(200);
     if (digitalRead(Down) == LOW){        // still pressing mute/down: accessing volume control
@@ -206,10 +203,14 @@ void media_function() {
     }
     delay(150);
   }
+
+  // up for play/pause
   if (digitalRead(Up) == LOW){
     Consumer.write(MEDIA_PLAY_PAUSE);
     delay(150);
   }
+
+  // right/left for next/previous
   if (digitalRead(Right) == LOW){
     Consumer.write(MEDIA_NEXT);
     delay(150);
@@ -223,52 +224,77 @@ void media_function() {
 
 /*************************** VLC mode ***********************/
 void vlc_function(){
+
+  // down for printscreen, hold for +-3s
   if (digitalRead(Down) == LOW){
     delay(200);
-    if (digitalRead(Down) == LOW){        // still pressing mute/down: accessing volume control
+    if (digitalRead(Down) == LOW){        // still pressing down: accessing 3s control
       while(digitalRead(Down) == LOW){
         if (digitalRead(Right) == LOW){
-          Consumer.write(MEDIA_VOLUME_UP);
+          Keyboard.press(KEY_RIGHT_SHIFT);      // shift + -> for +3s
+          Keyboard.press(KEY_RIGHT_ARROW);
+          Keyboard.release(KEY_RIGHT_ARROW);
+          Keyboard.release(KEY_RIGHT_SHIFT);
           delay(150);
         }
         if (digitalRead(Left) == LOW){
-          Consumer.write(MEDIA_VOLUME_DOWN);
+          Keyboard.press(KEY_RIGHT_SHIFT);      // shift + <- for -3s
+          Keyboard.press(KEY_LEFT_ARROW);
+          Keyboard.release(KEY_LEFT_ARROW);
+          Keyboard.release(KEY_RIGHT_SHIFT);
           delay(150);
         }
       }
     }
     else{
-      Consumer.write(MEDIA_VOLUME_MUTE);
+      Keyboard.press(KEY_RIGHT_SHIFT);          // shift + s for printscreen
+      Keyboard.press('s');
+      Keyboard.release('s');
+      Keyboard.release(KEY_RIGHT_SHIFT);
+      delay(150);
     }
-    delay(150);
-  }
-  if (digitalRead(Up) == LOW){
-    Consumer.write(MEDIA_PLAY_PAUSE);
-    delay(150);
-  }
-  if (digitalRead(Right) == LOW){
-    Consumer.write(MEDIA_NEXT);
-    delay(150);
-  }
-
-  // up: play/pause
-  if (digitalRead(Up) == LOW){
-    Consumer.write(MEDIA_PLAY_PAUSE);
-    delay(150);
   }
   
-  // right: +10s
+  // up for play/pause, hold for +-1mn
+  if (digitalRead(Up) == LOW){
+    delay(200);
+    if (digitalRead(Up) == LOW){        // still pressing up: accessing 1mn control
+      while(digitalRead(Up) == LOW){
+        if (digitalRead(Right) == LOW){
+          Keyboard.press(KEY_RIGHT_CTRL);       // control + -> for +1mn
+          Keyboard.press(KEY_RIGHT_ARROW);
+          Keyboard.release(KEY_RIGHT_ARROW);
+          Keyboard.release(KEY_RIGHT_CTRL);
+          delay(150);
+        }
+        if (digitalRead(Left) == LOW){
+          Keyboard.press(KEY_RIGHT_CTRL);       // control + <- for -1mn
+          Keyboard.press(KEY_LEFT_ARROW);
+          Keyboard.release(KEY_LEFT_ARROW);
+          Keyboard.release(KEY_RIGHT_CTRL);
+          delay(150);
+        }
+      }
+    }
+    else{
+       Keyboard.press(' ');
+       Keyboard.release(' ');         // play/pause (space to not interact with possible music player)
+      delay(150);
+    }
+  }
+  
+  // right for +10s
   if (digitalRead(Right) == LOW) Keyboard.press(KEY_RIGHT_ARROW);
   if (digitalRead(Right) == HIGH) Keyboard.release(KEY_RIGHT_ARROW);
 
-  // left: -10s
+  // left for -10s
   if (digitalRead(Left) == LOW) Keyboard.press(KEY_LEFT_ARROW);
   if (digitalRead(Left) == HIGH) Keyboard.release(KEY_LEFT_ARROW);
 }
 
 
-/*************************** YY mode ***********************/
-void yy_function(){
+/*************************** off mode ***********************/
+void off_function(){
   
 }
 
@@ -319,7 +345,7 @@ void loop() {
       case(MODE_MOUSE): mouse_function(); break;
       case(MODE_MEDIA): media_function(); break;
       case(MODE_VLC): vlc_function(); break;
-      case(MODE_YY): yy_function(); break;
+      case(MODE_OFF): off_function(); break;
       case(MODE_SNAKE): snake_function(); break;
     }
 }
