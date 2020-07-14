@@ -23,11 +23,11 @@ bool led_on = false;
 // different modes
 #define MODE_KEYBOARD 1
 #define MODE_MOUSE 2
-#define MODE_MEDIA 3
+#define MODE_MUSIC 3
 #define MODE_VLC 4
 #define MODE_OFF 5
 #define MODE_SNAKE 6
-int mode = MODE_MEDIA;
+int mode = MODE_MUSIC;
 
 // for OLED screen
 #define OLED_RESET 4
@@ -44,7 +44,7 @@ void clear_screen() {
     switch(mode){
       case(MODE_KEYBOARD): display.println("Keyboard mode"); break;
       case(MODE_MOUSE): display.println("Mouse mode"); break;
-      case(MODE_MEDIA): display.println("Media mode"); break;
+      case(MODE_MUSIC): display.println("Music mode"); break;
       case(MODE_VLC): display.println("VLC mode"); break;
       case(MODE_OFF): display.println("Off mode"); break;
       case(MODE_SNAKE): display.println("SNAKE mode"); break;
@@ -115,7 +115,7 @@ void change_mode() {
       delay(200);
       if (digitalRead(RUp) == HIGH){                                  // right short pressed
         Serial.print("Right button short pressed\n");
-        mode = MODE_MEDIA;
+        mode = MODE_MUSIC;
         OledClear = true;
         delay(500);  // to leave time to release
       }
@@ -196,8 +196,8 @@ void mouse_function() {
 }
 
 
-/*************************** media mode ***********************/
-void media_function() {
+/*************************** music mode ***********************/
+void music_function() {
 
   // down for mute: hold for volume control with LR
   if (digitalRead(Down) == LOW){
@@ -367,7 +367,7 @@ void loop() {
     switch(mode){
       case(MODE_KEYBOARD): keyboard_function(); break;
       case(MODE_MOUSE): mouse_function(); break;
-      case(MODE_MEDIA): media_function(); break;
+      case(MODE_MUSIC): music_function(); break;
       case(MODE_VLC): vlc_function(); break;
       case(MODE_OFF): off_function(); break;
       case(MODE_SNAKE): snake_function(); break;
