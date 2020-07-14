@@ -17,7 +17,7 @@
 #define MODE_KEYBOARD 1
 #define MODE_MOUSE 2
 #define MODE_MEDIA 3
-#define MODE_XX 4
+#define MODE_VLC 4
 #define MODE_YY 5
 #define MODE_SNAKE 6
 int mode = MODE_MEDIA;
@@ -43,7 +43,7 @@ void clear_screen() {
       case(MODE_KEYBOARD): display.println("Keyboard mode"); break;
       case(MODE_MOUSE): display.println("Mouse mode"); break;
       case(MODE_MEDIA): display.println("Media mode"); break;
-      case(MODE_XX): display.println("XX mode"); break;
+      case(MODE_VLC): display.println("VLC mode"); break;
       case(MODE_YY): display.println("YY mode"); break;
       case(MODE_SNAKE): display.println("SNAKE mode"); break;
     }
@@ -69,7 +69,7 @@ void change_mode() {
       }
       else{                                                         // both short pressed
         Serial.print("Both button short pressed\n");
-        mode = MODE_XX;
+        mode = MODE_YY;
         OledClear = true;
         delay(500);  // to leave time to release
       }
@@ -103,7 +103,7 @@ void change_mode() {
       }
       else{                                                         // both short pressed
         Serial.print("Both button short pressed\n");
-        mode = MODE_XX;
+        mode = MODE_YY;
         OledClear = true;
         delay(500);  // to leave time to release
       }
@@ -118,7 +118,7 @@ void change_mode() {
       }
       if (digitalRead(RUp) == LOW){       // right long pressed
         Serial.print("Right button long pressed\n");
-        mode = MODE_YY;
+        mode = MODE_VLC;
         OledClear = true;
         delay(500);  // to leave time to release
       }
@@ -221,6 +221,64 @@ void media_function() {
 }
 
 
+/*************************** VLC mode ***********************/
+void vlc_function(){
+  if (digitalRead(Down) == LOW){
+    delay(200);
+    if (digitalRead(Down) == LOW){        // still pressing mute/down: accessing volume control
+      while(digitalRead(Down) == LOW){
+        if (digitalRead(Right) == LOW){
+          Consumer.write(MEDIA_VOLUME_UP);
+          delay(150);
+        }
+        if (digitalRead(Left) == LOW){
+          Consumer.write(MEDIA_VOLUME_DOWN);
+          delay(150);
+        }
+      }
+    }
+    else{
+      Consumer.write(MEDIA_VOLUME_MUTE);
+    }
+    delay(150);
+  }
+  if (digitalRead(Up) == LOW){
+    Consumer.write(MEDIA_PLAY_PAUSE);
+    delay(150);
+  }
+  if (digitalRead(Right) == LOW){
+    Consumer.write(MEDIA_NEXT);
+    delay(150);
+  }
+
+  // up: play/pause
+  if (digitalRead(Up) == LOW){
+    Consumer.write(MEDIA_PLAY_PAUSE);
+    delay(150);
+  }
+  
+  // right: +10s
+  if (digitalRead(Right) == LOW) Keyboard.press(KEY_RIGHT_ARROW);
+  if (digitalRead(Right) == HIGH) Keyboard.release(KEY_RIGHT_ARROW);
+
+  // left: -10s
+  if (digitalRead(Left) == LOW) Keyboard.press(KEY_LEFT_ARROW);
+  if (digitalRead(Left) == HIGH) Keyboard.release(KEY_LEFT_ARROW);
+}
+
+
+/*************************** YY mode ***********************/
+void yy_function(){
+  
+}
+
+
+/*************************** snake mode ***********************/
+void snake_function(){
+  
+}
+
+
 /*************************** setup ***********************/
 void setup() {
   // Telling the Arduino that the switches are inputs, and the LED is an output //
@@ -255,19 +313,13 @@ void loop() {
     // change the line of text accordingly
     clear_screen();
 
-
-    /*************************** keyboard mode ***********************/
-    if (mode == MODE_KEYBOARD){
-      keyboard_function();
-    }
-
-    /*************************** mouse mode ***********************/
-    if (mode == MODE_MOUSE){
-      mouse_function();
-    }
-
-    /*************************** media mode ***********************/
-    if (mode == MODE_MEDIA){
-      media_function();
+    /*************************** mode switch ***********************/
+    switch(mode){
+      case(MODE_KEYBOARD): keyboard_function(); break;
+      case(MODE_MOUSE): mouse_function(); break;
+      case(MODE_MEDIA): media_function(); break;
+      case(MODE_VLC): vlc_function(); break;
+      case(MODE_YY): yy_function(); break;
+      case(MODE_SNAKE): snake_function(); break;
     }
 }
