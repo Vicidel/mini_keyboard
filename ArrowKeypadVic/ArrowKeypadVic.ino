@@ -47,8 +47,8 @@ void clear_screen() {
       case(MODE_MOUSE): display.drawBitmap(0, 0, mouse, 128, 32, WHITE); break;
       case(MODE_MUSIC): display.drawBitmap(0, 0, music, 128, 32, WHITE); break;
       case(MODE_VLC): display.drawBitmap(0, 0, vlc, 128, 32, WHITE); break;
-      case(MODE_OFF): display.drawBitmap(0, 0, music, 128, 32, WHITE); break;
-      case(MODE_SNAKE): display.drawBitmap(0, 0, music, 128, 32, WHITE); break;
+      case(MODE_OFF): break;
+      case(MODE_SNAKE): break;
     }
     display.display();
     OledClear = false;
