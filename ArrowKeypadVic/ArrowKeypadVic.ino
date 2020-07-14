@@ -13,7 +13,7 @@
 #define Right 9
 
 // for LED
-#define LedData 5
+#define Led 5
 bool led_on = false;
 
 // different modes
@@ -294,19 +294,18 @@ void vlc_function(){
 /*************************** off mode ***********************/
 void off_function(){
 
-  // does nothing, that's the point
+  // in off mode, can switch LED on and off by pressing up
+  if (digitalRead(Up) == LOW){
+    led_on = !led_on;
+    delay(150);
+    if(led_on) digitalWrite(Led, HIGH);
+    else digitalWrite(Led, LOW);
+  }
 }
 
 
 /*************************** snake mode ***********************/
 void snake_function(){
-
-  // TODO
-}
-
-
-/*************************** LED control ***********************/
-void led_control(){
 
   // TODO
 }
@@ -321,7 +320,7 @@ void setup() {
   pinMode (Left, INPUT_PULLUP);
   pinMode (Down, INPUT_PULLUP);
   pinMode (Right, INPUT_PULLUP);
-  pinMode (LedData, OUTPUT);
+  pinMode (Led, OUTPUT);
   
   Keyboard.begin();
   Mouse.begin();
@@ -346,9 +345,6 @@ void loop() {
     // change the line of text accordingly
     clear_screen();
 
-    // change LED status
-    led_control();
-    
     /*************************** mode switch ***********************/
     switch(mode){
       case(MODE_KEYBOARD): keyboard_function(); break;
