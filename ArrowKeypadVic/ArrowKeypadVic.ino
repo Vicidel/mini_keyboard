@@ -18,7 +18,8 @@ int scroll_speed = 1;
 
 // for LED
 #define Led 5
-bool led_on = false;
+int brightness = 0;
+int fade_increment = 50;
 
 // different modes
 #define MODE_KEYBOARD 1
@@ -312,12 +313,13 @@ void vlc_function(){
 /*************************** off mode ***********************/
 void off_function(){
 
-  // in off mode, can switch LED on and off by pressing up
+  // in off mode, can choose lLED brightness by pressing up
   if (digitalRead(Up) == LOW){
-    led_on = !led_on;
     delay(150);
-    if(led_on) digitalWrite(Led, HIGH);
-    else digitalWrite(Led, LOW);
+    brightness = brightness + fade_increment;     // add 50 to the brightness
+    if (brightness >= 255) brightness = 0;        // if above 255, go back to 
+    analogWrite(Led, brightness);
+    delay(150);
   }
 }
 
@@ -363,6 +365,9 @@ void loop() {
     // change the line of text accordingly
     clear_screen();
 
+    // write initial LED brightness
+    analogWrite(Led, brightness);
+    
     /*************************** mode switch ***********************/
     switch(mode){
       case(MODE_KEYBOARD): keyboard_function(); break;
