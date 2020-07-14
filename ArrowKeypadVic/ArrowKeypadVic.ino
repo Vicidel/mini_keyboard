@@ -12,6 +12,10 @@
 #define Down 7
 #define Right 9
 
+// mouse mouvement speed
+int move_speed = 1;
+int scroll_speed = 1;
+
 // for LED
 #define Led 5
 bool led_on = false;
@@ -151,25 +155,39 @@ void keyboard_function() {
 void mouse_function() {
 
   // mouse mouvements
-  if (digitalRead(Down) == LOW) Mouse.move(0, 2); 
-  if (digitalRead(Up) == LOW) Mouse.move(0, -2);
-  if (digitalRead(Right) == LOW) Mouse.move(2, 0);
-  if (digitalRead(Left) == LOW) Mouse.move(-2, 0);
+  if (digitalRead(Down) == LOW) Mouse.move(0, move_speed); 
+  if (digitalRead(Up) == LOW) Mouse.move(0, -move_speed);
+  if (digitalRead(Right) == LOW) Mouse.move(move_speed, 0);
+  if (digitalRead(Left) == LOW) Mouse.move(-move_speed, 0);
 
-  // for mouse buttons: for now hold LR and click up/down: TODO change it
-  if (digitalRead(Left) == LOW && digitalRead(Right) == LOW){   // left and right pressed
+  // for mouse buttons: hold up/down and click left/right
+  if (digitalRead(Up) == LOW && digitalRead(Down) == LOW){          // up and down
     delay(200);
-    if (digitalRead(Left) == LOW && digitalRead(Right) == LOW){        // still pressing both
-      while(digitalRead(Left) == LOW && digitalRead(Right) == LOW){
-        Serial.print("Pressing RL: accessing mouse buttons\n");
-        if (digitalRead(Up) == LOW){
-          Serial.print("Left button\n");
+    if (digitalRead(Up) == LOW && digitalRead(Down) == LOW){        // still pressing both
+      while(digitalRead(Up) == LOW && digitalRead(Down) == LOW){
+        if (digitalRead(Left) == LOW){
           Mouse.click(MOUSE_LEFT);
           delay(300);
         }
-        if (digitalRead(Down) == LOW){
-          Serial.print("Right button\n");
+        if (digitalRead(Right) == LOW){
           Mouse.click(MOUSE_RIGHT);
+          delay(300);
+        }
+      }
+    }
+  }
+
+  // for scroll: hold left/right and click up/down
+  if (digitalRead(Left) == LOW && digitalRead(Right) == LOW){          // left and right
+    delay(200);
+    if (digitalRead(Left) == LOW && digitalRead(Right) == LOW){        // still pressing both
+      while(digitalRead(Left) == LOW && digitalRead(Right) == LOW){
+        if (digitalRead(Up) == LOW){
+          Mouse.move(0, 0, scroll_speed);
+          delay(300);
+        }
+        if (digitalRead(Down) == LOW){
+          Mouse.move(0, 0, -scroll_speed);
           delay(300);
         }
       }
