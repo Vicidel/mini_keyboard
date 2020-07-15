@@ -37,11 +37,24 @@ int mode = MODE_MUSIC;
 boolean OledClear = true;
 Adafruit_SSD1306 display(OLED_RESET);
 
+// for snake
+#define WIDTH 128
+#define HEIGHT 32
+int snake_length = 4;
+int x;
+int y;
+#define XPLUS 1
+#define XMINUS 2
+#define YPLUS 3
+#define YMINUS 4
+int direction;
+
 
 /*************************** clear screen ***********************/
 void clear_screen() {
   if (OledClear == true) {
     display.clearDisplay();
+    display.setTextSize(1);
     switch(mode){
       case(MODE_KEYBOARD): {
         display.drawBitmap(0, 0, keyboard, 128, 32, WHITE); 
@@ -354,6 +367,72 @@ void off_function(){
 void snake_function(){
 
   // TODO
+
+  /*// for snake    // copy of the inital declaration for ease of programming
+  #define WIDTH 128
+  #define HEIGHT 32
+  int snake_length = 4;
+  const int start_x = random(WIDTH);
+  const int start_y = random(HEIGHT);
+  #define XPLUS 1
+  #define XMINUS 2
+  #define YPLUS 3
+  #define YMINUS 4
+  int direction;*/
+
+  // start
+  display.clearDisplay();
+  display.setCursor(30,8);
+  display.setTextSize(2);
+  display.println("SNAKE");
+  display.display();
+  delay(1000);
+  display.clearDisplay();
+  display.setCursor(0,0);
+
+  // loop
+  while(digitalRead(LUp) == HIGH && digitalRead(RUp) == HIGH){      // checks that the small buttons are not clicked
+
+    Serial.print("In game\n");
+    display.drawRect(0,0,WIDTH-1,HEIGHT-1,WHITE);
+    display.drawPixel(x, y, WHITE);
+    display.display();
+
+    // check buttons
+    if(digitalRead(Up) == LOW && direction != YPLUS) direction = YMINUS;
+    if(digitalRead(Down) == LOW && direction != YMINUS) direction = YPLUS;
+    if(digitalRead(Right) == LOW && direction != XMINUS) direction = XPLUS;
+    if(digitalRead(Left) == LOW && direction != XPLUS) direction = XMINUS;
+
+    // increase xy
+    if(direction == YMINUS) y = y - 1;
+    if(direction == YPLUS) y = y + 1;
+    if(direction == XPLUS) x = x + 1;
+    if( direction == XMINUS) x = x - 1;
+
+    // check bound
+    if(x>=128-1 || x<=0 || y<=0 || y>=32-1){
+      display.clearDisplay();
+      display.setCursor(10,8);
+      display.setTextSize(2);
+      display.println("GAME OVER");  
+      display.display();    
+      break;
+    }
+  }
+
+  while(mode==MODE_SNAKE){
+    change_mode();
+  }
+  clear_screen();
+  
+  // set variables for next game
+  x = random(20,WIDTH-20);
+  y = random(5,HEIGHT-5);
+  if(x<WIDTH/2) direction = XPLUS;
+  else direction = XMINUS;
+  
+  Serial.print("Exited game\n");
 }
 
 
@@ -367,11 +446,13 @@ void setup() {
   pinMode (Down, INPUT_PULLUP);
   pinMode (Right, INPUT_PULLUP);
   pinMode (Led, OUTPUT);
-  
+
+  // start all
   Keyboard.begin();
   Mouse.begin();
   Consumer.begin();
 
+  // init OLED
   Serial.begin(9600);
   display.begin(SSD1306_SWITCHCAPVCC, 0x3C);
   display.display();
@@ -379,6 +460,15 @@ void setup() {
   display.clearDisplay();
   display.setTextSize(1);
   display.setTextColor(WHITE);
+
+  // set variables for snake
+  x = random(20,WIDTH-20);
+  y = random(5,HEIGHT-5);
+  if(x<WIDTH/2) direction = XPLUS;
+  else direction = XMINUS;
+  
+  // write initial LED brightness
+  analogWrite(Led, brightness);
 }
 
 
@@ -391,9 +481,6 @@ void loop() {
     // change the line of text accordingly
     clear_screen();
 
-    // write initial LED brightness
-    analogWrite(Led, brightness);
-    
     /*************************** mode switch ***********************/
     switch(mode){
       case(MODE_KEYBOARD): keyboard_function(); break;
